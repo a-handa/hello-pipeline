@@ -1,0 +1,33 @@
+# Optional fallback config.
+# Leave this here if you want to record CircleCI's onboarding generating a config for you.
+# To use it instead, copy it to .circleci/config.yml and push.
+
+version: 2.1
+
+orbs:
+  node: circleci/node@6
+
+jobs:
+  test:
+    executor:
+      name: node/default
+      tag: '22.11'
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run:
+          name: Lint
+          command: npm run lint
+      - run:
+          name: Run tests
+          command: npm run test:ci
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
+
+workflows:
+  build-and-test:
+    jobs:
+      - test
